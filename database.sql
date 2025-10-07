@@ -27,7 +27,7 @@ INSERT INTO votes (candidate) VALUES
 
 CREATE TABLE candidates (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
     position VARCHAR(255) NOT NULL,
     course VARCHAR(255) NOT NULL
 );
