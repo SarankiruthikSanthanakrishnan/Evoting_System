@@ -1,3 +1,4 @@
+DROP DATABASE evoting_system;
 CREATE DATABASE IF NOT EXISTS evoting_system;
 USE evoting_system;
 CREATE TABLE IF NOT EXISTS users(
