@@ -2,6 +2,7 @@
 require "db.php";
 session_start();
 $message = "";
+$error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $candidateId = $_POST["candidateId"];
@@ -21,10 +22,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: votingpage.php");
             exit();
         } else {
-            $message = "Invalid Candidate ID or Password";
+            $error = "Invalid Candidate ID or Password";
         }
     } else {
-        $message = "Invalid Candidate ID or Password";
+        $error = "Invalid Candidate ID or Password";
     }
 
     $stmt->close();
@@ -38,6 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Candidate Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
             background-image: url('9270978_4116831.jpg');
@@ -46,27 +48,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-repeat: no-repeat;
         }
         .form-container {
-            background-color: white; /* Changed to white */
+            background-color: white;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            color: #333; /* Changed text to dark for readability */
+            color: #333;
             position: relative;
-        }
-        .form-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            /* No background image for the container */
         }
         .form-label {
             color: #333;
         }
         .form-control {
-            background-color: #f8f9fa; /* Light gray background */
+            background-color: #f8f9fa;
             color: #333;
             border: 1px solid #ccc;
         }
@@ -87,6 +79,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .alert {
             margin-top: 1rem;
         }
+        /* New styling for the icon inside the input group */
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-left: none;
+            cursor: pointer;
+        }
+        .input-group-text:hover {
+            color: #0066cc;
+        }
     </style>
 </head>
 <body class="d-flex justify-content-center align-items-center vh-100">
@@ -100,7 +101,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required />
+                <div class="input-group">
+                    <input type="password" class="form-control" id="password" name="password" required />
+                    <button class="btn-outline-dark input-group-text" type="button" id="togglePassword">
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
@@ -110,14 +116,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="registration.php" class="text-info text-decoration-none">Register Here</a>
         </p>
         
-        <?php if (!empty($message)): ?>
-            <div class="alert alert-info mt-3 text-center">
-                <?php echo $message; ?>
-            </div>
-        <?php endif; ?>
-        
+        <?php
+        if (isset($message) && $message != '') {
+            echo '<div class="alert alert-success mt-3 text-center" id="message-alert">' . $message . '</div>';
+        } elseif (isset($error) && $error != '') {
+            echo '<div class="alert alert-danger mt-3 text-center" id="error-alert">' . $error . '</div>';
+        }
+        ?>    
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        setTimeout(() => {
+            const messageAlert = document.getElementById('message-alert');
+            const errorAlert = document.getElementById('error-alert');
+            if (messageAlert) {
+                messageAlert.remove();
+            }
+            if (errorAlert) {
+                errorAlert.remove();
+            }
+        }, 3000);
+
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function() {
+            // Toggle the type attribute
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle the eye icon
+            this.querySelector('i').classList.toggle('bi-eye-fill');
+            this.querySelector('i').classList.toggle('bi-eye-slash-fill');
+        });
+    </script>
 </body>
 </html>

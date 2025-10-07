@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $voterid = $_POST["voterid"];
     $password = $_POST["password"];
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-    
+
     $check_stmt = $conn->prepare("SELECT email FROM users WHERE email=? OR voter_id=?");
     $check_stmt->bind_param("ss", $email, $voterid);
     $check_stmt->execute();
@@ -33,11 +33,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Voter Registration</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
             background-image: url('9270978_4116831.jpg');
@@ -45,43 +47,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-position: center;
             background-repeat: no-repeat;
         }
+
         /* Style for the solid white form container */
         .form-container {
-            background-color: white; /* Changed to solid white */
+            background-color: white;
+            /* Changed to solid white */
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            color: #333; /* Changed text to a dark color for readability */
+            color: #333;
+            /* Changed text to a dark color for readability */
             position: relative;
         }
+
         /* No ::before pseudo-element needed */
-        
+
         .form-label {
-            color: #333; /* Changed text color */
+            color: #333;
+            /* Changed text color */
         }
+
         .form-control {
-            background-color: #f8f9fa; /* Light gray for input background */
-            color: #333; /* Changed text color */
+            background-color: #f8f9fa;
+            /* Light gray for input background */
+            color: #333;
+            /* Changed text color */
             border: 1px solid #ccc;
         }
+
         .form-control:focus {
             background-color: #e9ecef;
             color: #333;
             box-shadow: 0 0 0 0.25rem rgba(0, 128, 255, 0.25);
             border-color: #0080ff;
         }
+
         .btn-primary {
             background-color: #0080ff;
             border-color: #0080ff;
         }
+
         .btn-primary:hover {
             background-color: #0066cc;
             border-color: #0066cc;
         }
+
         .alert {
             margin-top: 1rem;
         }
     </style>
 </head>
+
 <body class="d-flex justify-content-center align-items-center vh-100">
     <div class="container">
         <div class="row justify-content-center">
@@ -110,7 +125,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required minlength="6" />
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="password" name="password" required />
+                                <button class="btn-outline-dark input-group-text" type="button" id="togglePassword">
+                                    <i class="bi bi-eye-fill"></i>
+                                </button>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary w-100 mt-4">Register</button>
                     </form>
@@ -130,7 +150,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (errorAlert) {
                 errorAlert.remove();
             }
-        }, 5000); // Changed to 5000ms for better user experience
+        }, 3000);
+
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function() {
+            // Toggle the type attribute
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Toggle the eye icon
+            this.querySelector('i').classList.toggle('bi-eye-fill');
+            this.querySelector('i').classList.toggle('bi-eye-slash-fill');
+        });
     </script>
 </body>
+
 </html>
